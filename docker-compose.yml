@@ -1,0 +1,27 @@
+version: "3"
+services:
+    api:
+        build: .
+        ports:
+            - "8000:8000"
+
+       
+        env_file:
+            - ./.env
+
+        depends_on:
+            - postgres                
+
+    postgres:
+        image: postgres
+        environment:
+           
+            - POSTGRES_PASSWORD=1234
+            - POSTGRES_DB=FastApi-Social_Media
+        volumes:
+            - postgres-db:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+
+volumes:
+    postgres-db:
