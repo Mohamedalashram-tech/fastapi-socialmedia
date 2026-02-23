@@ -1,10 +1,13 @@
 version: "3"
 services:
     api:
-        build: .
+        image: mohamedalashram/fastapi
+
         ports:
             - "8000:8000"
-
+        volumes:
+            - .:/usr/src/app
+        command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
        
         env_file:
             - ./.env
