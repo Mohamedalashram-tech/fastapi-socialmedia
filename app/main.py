@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from sqlalchemy import text
+
 from fastapi.middleware.cors import CORSMiddleware
 from. import models
 from .database import engine
@@ -7,9 +7,6 @@ from .routers import post, user , auth , vote
 from .config import settings
 
 
-with engine.connect() as conn:
-    conn.execute(text("DROP TABLE IF EXISTS alembic_version CASCADE;"))
-    conn.commit()
 #models.Base.metadata.create_all(bind=engine)
 origins = ["*"]
 
