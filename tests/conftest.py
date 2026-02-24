@@ -2,22 +2,20 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from app.oauth2 import create_Access_token
 from app.main import app
 from app.database import get_db, Base
 from app import models
 from app.config import settings
 
-
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 @pytest.fixture
 def session():
+    
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
@@ -66,39 +64,21 @@ def authorized_client(client, token):
 @pytest.fixture
 def test_posts(test_user, session, test_user2):
     posts_data = [
-        {
-            "title": "favourite video games",
-            "content": "Dark souls, Hitman, Celeste",
-            "owner_id": test_user["id"],
-            "activaties": "playing video games"
-        },
-        {
-            "title": "favourite Tv show",
-            "content": "Person of interest, Breaking Bad, Lost, Succession",
-            "owner_id": test_user["id"],
-            "activaties": "Watching Tv"
-        },
-        {
-            "title": "typen shi...",
-            "content": "shi...shi....shi....",
-            "owner_id": test_user["id"],
-            "activaties": "just horseing around"
-        },
-        {
-            "title": "typen shi...",
-            "content": "shi...shi....shi....",
-            "owner_id": test_user2["id"],
-            "activaties": "just horseing around"
-        }
+        {"title": "favourite video games", "content": "Dark souls", "owner_id": test_user["id"]},
+        {"title": "favourite Tv show", "content": "Person of interest", "owner_id": test_user["id"]},
+        {"title": "typen shi...", "content": "shi...", "owner_id": test_user["id"]},
+        {"title": "other user post", "content": "content", "owner_id": test_user2["id"]}
     ]
-    
     posts = [models.Post(**post) for post in posts_data]
     session.add_all(posts)
     session.commit()
     return session.query(models.Post).all()
 
+
 @pytest.fixture
 def test_vote(test_posts, session, test_user):
-    new_vote = models.Vote(post_id=test_posts[3].id, user_id=test_user["id"])
+   
+    new_vote = models.Vote(post_id=test_posts[3].id, user_id=test_user["id"], dir=1)
     session.add(new_vote)
     session.commit()
+    return new_vote

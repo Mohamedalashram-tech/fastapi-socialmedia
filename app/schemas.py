@@ -76,4 +76,5 @@ class VoteDirection(int, Enum):
     
 class Vote(BaseModel):
     post_id: int
-    dir: int
+    dir: VoteDirection
+    
